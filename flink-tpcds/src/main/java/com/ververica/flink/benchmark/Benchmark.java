@@ -21,6 +21,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.config.ExecutionConfigOptions;
 import org.apache.flink.table.api.config.OptimizerConfigOptions;
@@ -37,8 +38,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static com.ververica.flink.benchmark.QueryUtil.getQueries;
+import static java.util.Objects.requireNonNull;
 
 public class Benchmark {
 
@@ -60,21 +61,31 @@ public class Benchmark {
 	private static final Option PARALLELISM = new Option("p", "parallelism", true,
 			"The parallelism, default is 800.");
 
+    private static final Option MODE =
+            new Option("m", "mode", true, "mode: 'execute' or 'explain'");
+
 	public static void main(String[] args) throws ParseException {
 		Options options = getOptions();
 		DefaultParser parser = new DefaultParser();
 		CommandLine line = parser.parse(options, args, true);
-		run(
-				setUpEnv(
-						requireNonNull(line.getOptionValue(HIVE_CONF.getOpt())),
-						requireNonNull(line.getOptionValue(DATABASE.getOpt())),
-						Integer.parseInt(line.getOptionValue(PARALLELISM.getOpt(), "800"))
-				),
-				getQueries(
-						line.getOptionValue(LOCATION.getOpt()),
-						line.getOptionValue(QUERIES.getOpt())),
-				Integer.parseInt(line.getOptionValue(ITERATIONS.getOpt(), "1"))
-		);
+        System.out.println("args: " + String.join(" ", args));
+
+        String mode = line.getOptionValue(MODE.getOpt(), "execute");
+        TableEnvironment tEnv =
+                setUpEnv(
+                        requireNonNull(line.getOptionValue(HIVE_CONF.getOpt())),
+                        requireNonNull(line.getOptionValue(DATABASE.getOpt())),
+                        Integer.parseInt(line.getOptionValue(PARALLELISM.getOpt(), "800")));
+        LinkedHashMap<String, String> queries =
+                getQueries(
+                        line.getOptionValue(LOCATION.getOpt()),
+                        line.getOptionValue(QUERIES.getOpt()));
+
+        if ("explain".equals(mode)) {
+            explain(tEnv, queries);
+        } else {
+            run(tEnv, queries, Integer.parseInt(line.getOptionValue(ITERATIONS.getOpt(), "1")));
+        }
 	}
 
 	private static void run(TableEnvironment tEnv, LinkedHashMap<String, String> queries, int iterations) {
@@ -87,6 +98,16 @@ public class Benchmark {
 		});
 		printSummary(bestArray);
 	}
+
+    private static void explain(TableEnvironment tEnv, LinkedHashMap<String, String> queries) {
+        List<Tuple2<String, Long>> bestArray = new ArrayList<>();
+        queries.forEach(
+                (name, sql) -> {
+                    System.out.println("Start explain query: " + name);
+                    System.out.println(tEnv.explainSql(sql, ExplainDetail.ESTIMATED_COST));
+                });
+        printSummary(bestArray);
+    }
 
 	private static void printSummary(List<Tuple2<String, Long>> bestArray) {
 		if (bestArray.isEmpty()) {
@@ -164,6 +185,7 @@ public class Benchmark {
 		options.addOption(QUERIES);
 		options.addOption(ITERATIONS);
 		options.addOption(PARALLELISM);
+        options.addOption(MODE);
 		return options;
 	}
 }
