@@ -19,6 +19,7 @@ package com.ververica.flink.benchmark;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.GlobalConfiguration;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.config.ExecutionConfigOptions;
@@ -79,6 +80,7 @@ public class Benchmark {
 	private static void run(TableEnvironment tEnv, LinkedHashMap<String, String> queries, int iterations) {
 		List<Tuple2<String, Long>> bestArray = new ArrayList<>();
 		queries.forEach((name, sql) -> {
+			tEnv.getConfig().getConfiguration().set(PipelineOptions.NAME, name);
 			System.out.println("Start run query: " + name);
 			Runner runner = new Runner(name, sql, iterations, tEnv);
 			runner.run(bestArray);
