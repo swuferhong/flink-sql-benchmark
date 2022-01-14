@@ -30,12 +30,15 @@ under the License.
 	<packaging>pom</packaging>
 
 	<properties>
-		<flink.version>1.14-SNAPSHOT</flink.version>
+		<flink.version>1.14.3</flink.version>
 		<hive.version>3.1.1</hive.version>
+		<spark.version>3.2.1</spark.version>
+		<scala.version>2.12.15</scala.version>
 	</properties>
 
 	<modules>
 		<module>flink-tpcds</module>
+		<module>spark-tpcds</module>
 	</modules>
 
 </project>
