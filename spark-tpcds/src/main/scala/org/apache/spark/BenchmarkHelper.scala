@@ -5,6 +5,9 @@ import org.apache.spark.benchmark.Benchmark
 import java.io.OutputStream
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
+/**
+ * BenchmarkHelper wrappers Benchmark which can be only accessed in package of org.apache.spark.
+ */
 class BenchmarkHelper(
         name: String,
         valuesPerIteration: Long,

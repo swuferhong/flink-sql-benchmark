@@ -30,6 +30,7 @@ import org.apache.spark.sql.internal.SQLConf
 
 import java.io.File
 import java.nio.file.Files
+import scala.concurrent.duration.DurationInt
 import scala.util.Try
 
 /**
@@ -109,7 +110,7 @@ object TPCDSQueryBenchmark extends SqlBasedBenchmark with Logging {
       nameSuffix: String = ""): Unit = {
     queries.foreach { name =>
       val startTime = System.currentTimeMillis();
-      print(s"$name start at ${startTime}")
+      println(s"$name start at ${startTime}")
       val queryString = readQuery(queryLocation, name)
 
       // This is an indirect hack to estimate the size of each query's input by traversing the
@@ -126,15 +127,18 @@ object TPCDSQueryBenchmark extends SqlBasedBenchmark with Logging {
       }
       val numRows = queryRelations.map(tableSizes.getOrElse(_, 0L)).sum
 
-      print(s"$name prepare cost ${System.currentTimeMillis() - startTime}")
-      val benchmark = new BenchmarkHelper(s"TPCDS Snappy", numRows, 2, output = output)
+      println(s"$name prepare cost ${System.currentTimeMillis() - startTime}")
+      // do not warm up, iters=1
+      val benchmark = new BenchmarkHelper(s"TPCDS Snappy", numRows, 1, warmupTime = -1.seconds, output = output)
       benchmark.addCase(s"$name$nameSuffix") { _ =>
         spark.sql(s"SET spark.app.name=$name")
+        println(s"$name start run at ${System.currentTimeMillis()}")
         spark.sql(queryString).noop()
+        println(s"$name finish at ${System.currentTimeMillis()}")
       }
       benchmark.run()
 
-      print(s"$name total cost ${System.currentTimeMillis() - startTime}")
+      println(s"$name total cost ${System.currentTimeMillis() - startTime}")
     }
   }
 
