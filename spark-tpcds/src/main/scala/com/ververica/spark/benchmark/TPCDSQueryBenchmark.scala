@@ -220,6 +220,11 @@ object TPCDSQueryBenchmark extends SqlBasedBenchmark with Logging {
       case m =>
         throw new RuntimeException(s"Illegal mode: $m")
     }
+
+    if (benchmarkArgs.debug) {
+      // hold the application
+      Thread.sleep(Long.MaxValue)
+    }
   }
 
   private def readQuery(queryLocation: String, name: String): String = {

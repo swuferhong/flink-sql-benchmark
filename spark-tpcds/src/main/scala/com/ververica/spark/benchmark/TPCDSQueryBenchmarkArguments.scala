@@ -30,6 +30,7 @@ class TPCDSQueryBenchmarkArguments(val args: Array[String]) {
   var mode: String = "explain" // explain or execute
   var recoverPartition: Boolean = false
   var histogram: Boolean = false
+  var debug: Boolean = false
 
   parseArgs(args.toList)
   validateArguments()
@@ -65,6 +66,10 @@ class TPCDSQueryBenchmarkArguments(val args: Array[String]) {
 
         case optName :: tail if optionMatch("--cbo", optName) =>
           cboEnabled = true
+          args = tail
+
+        case optName :: tail if optionMatch("--debug", optName) =>
+          debug = true
           args = tail
 
         case optName :: tail if optionMatch("--collect-stats", optName) =>
