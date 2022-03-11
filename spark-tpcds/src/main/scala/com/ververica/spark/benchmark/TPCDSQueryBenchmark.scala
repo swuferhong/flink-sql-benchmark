@@ -133,6 +133,7 @@ object TPCDSQueryBenchmark extends SqlBasedBenchmark with Logging {
       benchmark.addCase(s"$name$nameSuffix") { _ =>
         spark.sql(s"SET spark.app.name=$name")
         println(s"$name start run at ${System.currentTimeMillis()}")
+        spark.sparkContext.setJobDescription(s"query $name")
         spark.sql(queryString).noop()
         println(s"$name finish at ${System.currentTimeMillis()}")
       }
