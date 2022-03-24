@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spark-tpcds_2.12</artifactId>
+    <artifactId>spark-tpcds</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

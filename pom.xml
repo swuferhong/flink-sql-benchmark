@@ -39,6 +39,7 @@ under the License.
 	<modules>
 		<module>flink-tpcds</module>
 		<module>spark-tpcds</module>
+		<module>hive-tpcds-setup</module>
 	</modules>
 
 </project>
