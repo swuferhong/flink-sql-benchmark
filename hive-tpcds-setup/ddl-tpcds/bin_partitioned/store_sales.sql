@@ -1,3 +1,7 @@
+set hive.exec.max.dynamic.partitions=100000;
+set hive.exec.max.created.files=1000000;
+set hive.exec.max.dynamic.partitions.pernode=100000;
+
 use ${DB};
 from ${SOURCE}.store_sales ss
 insert overwrite table store_sales partition (ss_sold_date_sk)

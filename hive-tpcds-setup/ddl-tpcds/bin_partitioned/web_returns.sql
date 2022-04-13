@@ -1,3 +1,7 @@
+set hive.exec.max.dynamic.partitions=100000;
+set hive.exec.max.created.files=1000000;
+set hive.exec.max.dynamic.partitions.pernode=100000;
+
 use ${DB};
 from ${SOURCE}.web_returns wr
 insert overwrite table web_returns partition (wr_returned_date_sk)

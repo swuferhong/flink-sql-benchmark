@@ -1,3 +1,7 @@
+set hive.exec.max.dynamic.partitions=100000;
+set hive.exec.max.created.files=1000000;
+set hive.exec.max.dynamic.partitions.pernode=100000;
+
 use ${DB};
 from ${SOURCE}.catalog_sales cs
 insert overwrite table catalog_sales partition (cs_sold_date_sk)
