@@ -1,6 +1,8 @@
 set hive.exec.max.dynamic.partitions=100000;
 set hive.exec.max.created.files=1000000;
 set hive.exec.max.dynamic.partitions.pernode=100000;
+set hive.optimize.sort.dynamic.partition=true;
+set mapreduce.job.reduce.slowstart.completedmaps=1;
 use ${DB};
 from ${SOURCE}.catalog_returns cr
 insert overwrite table catalog_returns partition(cr_returned_date_sk)
