@@ -42,7 +42,7 @@ fi
 # Create the text/flat tables as external tables.
 echo "Loading data as external tables."
 SPARK_DATABASE=spark_tpcds_bin_partitioned_orc_${SCALE}
-runcommand "$HIVE_BIN -f ddl-tpcds/bin/alltables.sql --hivevar DB=${SPARK_DATABASE} --hivevar LOCATION=${DIR}"
+runcommand "$HIVE_BIN -f ddl-tpcds/bin_partitioned/alltables.sql --hivevar DB=${SPARK_DATABASE} --hivevar LOCATION=${DIR}"
 
-runcommand "$HIVE_BIN -f ddl-tpcds/bin/add_constraints.sql --hivevar DB=${SPARK_DATABASE}"
+runcommand "$HIVE_BIN -f ddl-tpcds/bin_partitioned/add_constraints.sql --hivevar DB=${SPARK_DATABASE}"
 echo "Data loaded into database ${SPAR_DATABASE}."

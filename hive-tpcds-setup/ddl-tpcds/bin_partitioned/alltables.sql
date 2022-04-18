@@ -93,6 +93,8 @@ create external table catalog_returns
 partitioned by (cr_returned_date_sk bigint)
 stored as orc
 location '${LOCATION}/catalog_returns';
+MSCK REPAIR TABLE catalog_returns;
+
 create database if not exists ${DB};
 use ${DB};
 
@@ -137,6 +139,8 @@ create external table catalog_sales
 partitioned by (cs_sold_date_sk bigint)
 stored as orc
 location '${LOCATION}/catalog_sales';
+MSCK REPAIR TABLE catalog_sales;
+
 create database if not exists ${DB};
 use ${DB};
 
@@ -404,6 +408,8 @@ create external table store_returns
 partitioned by (sr_returned_date_sk bigint)
 stored as orc
 location '${LOCATION}/store_returns';
+MSCK REPAIR TABLE store_returns;
+
 create database if not exists ${DB};
 use ${DB};
 
@@ -437,6 +443,8 @@ create external table store_sales
 partitioned by (ss_sold_date_sk bigint)
 stored as orc
 location '${LOCATION}/store_sales';
+MSCK REPAIR TABLE store_sales;
+
 create database if not exists ${DB};
 use ${DB};
 
@@ -576,6 +584,8 @@ create external table web_returns
 partitioned by (wr_returned_date_sk bigint)
 stored as orc
 location '${LOCATION}/web_returns';
+MSCK REPAIR TABLE web_returns;
+
 create database if not exists ${DB};
 use ${DB};
 
@@ -620,6 +630,8 @@ create external table web_sales
 partitioned by (ws_sold_date_sk bigint)
 stored as orc
 location '${LOCATION}/web_sales';
+MSCK REPAIR TABLE web_sales;
+
 create database if not exists ${DB};
 use ${DB};
 
